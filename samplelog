@@ -1,0 +1,7 @@
+127.0.0.1 - - [04/Oct/2020:00:34:53 +0530] "GET /robots.txt HTTP/1.1" 404 488 "-" "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0"
+127.0.0.1 - - [04/Oct/2020:00:34:53 +0530] "GET / HTTP/1.1" 200 930 "-" "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0"
+127.0.0.1 - - [04/Oct/2020:00:34:54 +0530] "GET /main.css HTTP/1.1" 200 5544 "http://localhost/" "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0"
+127.0.0.1 - - [04/Oct/2020:00:34:54 +0530] "GET /fonts.css HTTP/1.1" 200 691 "http://localhost/" "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0"
+127.0.0.1 - - [04/Oct/2020:00:34:54 +0530] "GET /forestbridge.jpg HTTP/1.1" 200 117002 "http://localhost/" "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0"
+127.0.0.1 - - [04/Oct/2020:00:34:54 +0530] "GET /favicon.ico HTTP/1.1" 404 487 "-" "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0"
+
