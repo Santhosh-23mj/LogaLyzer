@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import matplotlib.pyplot as plt
+
 class Data:
     def __init__(self, ip):
         self.ip   = ip
@@ -47,13 +49,18 @@ class LogLyzer:
 def main():
     log = LogLyzer("varysample")
     log.readFile()
+    ipReq = {}
     for obj in log.objArray:
         print(obj.ip)
         print(obj.req)
+        ipReq[obj.ip] = sum(list(obj.req.values()))
         print(obj.res)
         print(obj.UA)
         print(obj.file)
         print(obj.tms)
         print("\n")
+    fig,ax = plt.subplots()
+    ax.bar(ipReq.keys(),ipReq.values())
+    fig.show()
 
 main()
