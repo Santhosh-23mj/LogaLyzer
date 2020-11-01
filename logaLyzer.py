@@ -4,6 +4,7 @@
 Analysis Module 
 """
 from tkinter import filedialog
+from tabulate import tabulate
 
 class Data:
     def __init__(self, ip):
@@ -21,24 +22,55 @@ class LogLyzer:
     
     objArray = []
     ipList   = []
-    f = None
-    ipReq = {}
+    f        = None
+    ipReq    = {}
+    cumIpReq = {}
+    cumReq   = {}
+    cumRes   = {}
+    cumUA    = {}
+    cumFile  = {}
+
     
     def open_file(self):
         f = filedialog.askopenfile(mode='r')
         self.objArray.clear()
         self.ipList.clear()
         self.readFile(f)
-        
+        self.getCumulative()
+
+    def returnSortDic(self, dic):
+        dic = sorted(dic.items(), key = lambda kv:(kv[1],kv[0]))
+        dic.reverse()
+        return dic
+    
+    
+    def prettyPrint(self):
+        print("\n============== IP, Request Count =======================")
+        print(tabulate(self.returnSortDic(self.cumIpReq), headers=["IP", "Request Count"], tablefmt="fancy_grid"))
+        print("\n============== Request Method, Count ===================")
+        print(tabulate(self.returnSortDic(self.cumReq), headers=["Request Method", "Count"], tablefmt="fancy_grid"))
+        print("\n============== Status Code, Count ======================")
+        print(tabulate(self.returnSortDic(self.cumRes), headers=["Status Code", "Count"], tablefmt="fancy_grid"))
+        print("\n============== User Agent, Count =======================")
+        print(tabulate(self.returnSortDic(self.cumUA), headers=["User Agent", "Count"], tablefmt="fancy_grid"))
+        #print("\n============== File Accessed, Count =====================")
+        #print(tabulate(self.returnSortDic(cumFile), headers=["File Accessed", "Count"], tablefmt="fancy_grid"))
+
+
+    def getCumulative(self):
+        print("Called")
         for obj in self.objArray:
-            print(obj.ip)
-            print(obj.req)
-            self.ipReq[obj.ip] = sum(list(obj.req.values()))
-            print(obj.res)
-            print(obj.UA)
-            print(obj.file)
-            print(obj.tms)
-            print("\n")
+            self.cumIpReq[obj.ip] = sum(list(obj.req.values()))
+            for k,v in obj.req.items():
+                self.cumReq[k] = self.cumReq.get(k,0) + v
+            for k,v in obj.res.items():
+                self.cumRes[k] = self.cumRes.get(k,0) + v
+            for ua in obj.UA:
+                self.cumUA[ua] = self.cumUA.get(ua,0) + 1
+            for k,v in obj.file.items():
+                self.cumFile[k] = self.cumFile.get(k,0) + v
+        self.ipReq = self.cumIpReq
+        self.prettyPrint()
 
 
     def readFile(self, f):
