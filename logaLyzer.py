@@ -4,7 +4,6 @@
 Analysis Module 
 """
 from tkinter import filedialog
-from tabulate import tabulate
 
 class Data:
     def __init__(self, ip):
@@ -32,11 +31,20 @@ class LogLyzer:
 
     
     def open_file(self):
-        f = filedialog.askopenfile(mode='r')
+        self.f = filedialog.askopenfile(mode='r')
+        self.readFile(self.f)
+        self.getCumulative()
+        
+    def freeMem(self):
         self.objArray.clear()
         self.ipList.clear()
-        self.readFile(f)
-        self.getCumulative()
+        self.f = None
+        self.ipReq.clear()
+        self.cumIpReq.clear()
+        self.cumReq.clear()
+        self.cumRes.clear()
+        self.cumUA.clear()
+        self.cumFile.clear()
 
     def returnSortDic(self, dic):
         dic = sorted(dic.items(), key = lambda kv:(kv[1],kv[0]))
@@ -44,21 +52,7 @@ class LogLyzer:
         return dic
     
     
-    def prettyPrint(self):
-        print("\n============== IP, Request Count =======================")
-        print(tabulate(self.returnSortDic(self.cumIpReq), headers=["IP", "Request Count"], tablefmt="fancy_grid"))
-        print("\n============== Request Method, Count ===================")
-        print(tabulate(self.returnSortDic(self.cumReq), headers=["Request Method", "Count"], tablefmt="fancy_grid"))
-        print("\n============== Status Code, Count ======================")
-        print(tabulate(self.returnSortDic(self.cumRes), headers=["Status Code", "Count"], tablefmt="fancy_grid"))
-        print("\n============== User Agent, Count =======================")
-        print(tabulate(self.returnSortDic(self.cumUA), headers=["User Agent", "Count"], tablefmt="fancy_grid"))
-        #print("\n============== File Accessed, Count =====================")
-        #print(tabulate(self.returnSortDic(cumFile), headers=["File Accessed", "Count"], tablefmt="fancy_grid"))
-
-
     def getCumulative(self):
-        print("Called")
         for obj in self.objArray:
             self.cumIpReq[obj.ip] = sum(list(obj.req.values()))
             for k,v in obj.req.items():
@@ -70,7 +64,11 @@ class LogLyzer:
             for k,v in obj.file.items():
                 self.cumFile[k] = self.cumFile.get(k,0) + v
         self.ipReq = self.cumIpReq
-        self.prettyPrint()
+        self.cumIpReq = dict(self.returnSortDic(self.cumIpReq))
+        self.cumReq   = dict(self.returnSortDic(self.cumReq))
+        self.cumRes   = dict(self.returnSortDic(self.cumRes))
+        self.cumUA    = dict(self.returnSortDic(self.cumUA))
+        self.cumFile  = dict(self.returnSortDic(self.cumFile))
 
 
     def readFile(self, f):

@@ -2,6 +2,7 @@
 
 """
 FrontEnd Module
+#TODO Add a button/Checkbox to export results
 """
 
 import tkinter as tk
@@ -22,8 +23,6 @@ class GuiDesign:
 		fileNameSetButton = tk.Button(window, text='Choose File', font=("Open Sans", 9, "bold"), borderwidth=5, bg='#b3e0ff', command=lambda: self.log.open_file(), cursor='hand2', padx=5, pady=5, anchor='w').grid(row=1, column=1, padx=5, pady=0)  # Setting the filename to variable
 
 		label_getfile = tk.Label(window, text='Click for the results:', font=('verdana', 9, 'bold'),fg='#ffffff', bg='#293d3d', anchor='w').grid(row=2,column=0, padx=15)
-		graphGenButton = tk.Button(window, text='Generate Graph', font=("Open Sans", 9, "bold"), borderwidth=5, bg='#b3e0ff', command=self.op.gen_graph, cursor='rtl_logo', padx=5, pady=5).grid(row=2, column=1, padx=20, pady=20)
-		self.log.objArray.clear()
-		self.log.ipList.clear()
-    
+		graphGenButton = tk.Button(window, text='Get Results', font=("Open Sans", 9, "bold"), borderwidth=5, bg='#b3e0ff', command=self.op.gen_graph, cursor='rtl_logo', padx=5, pady=5).grid(row=2, column=1, padx=20, pady=20)
+
 		window.mainloop()
