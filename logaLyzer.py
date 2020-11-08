@@ -6,6 +6,9 @@ Analysis Module
 from tkinter import filedialog
 
 class Data:
+    """
+    Data class stores the data from the log file
+    """
     def __init__(self, ip):
         self.ip   = ip
         self.req  = {}
@@ -18,30 +21,120 @@ class Data:
         return self.ip
 
 class LogLyzer:
+    """
+    LogLyzer class reads the log file and saves all the data in easily
+    consumable form
+    """
     
     objArray = []
     ipList   = []
-    f = None
-    ipReq = {}
+    f        = None
+    ipReq    = {}
+    cumIpReq = {}
+    cumReq   = {}
+    cumRes   = {}
+    cumUA    = {}
+    cumFile  = {}
+
     
     def open_file(self):
-        f = filedialog.askopenfile(mode='r')
+        """
+        This function prompts the user to select the file that is to be analyzed
+        in the GUI window.
+
+        Returns
+        -------
+        Data stored in class variables
+
+        """
+        self.f = filedialog.askopenfile(mode='r')
+        self.readFile(self.f)
+        self.getCumulative()
+        
+    def freeMem(self):
+        """
+        This functions clears all variables makes the application ready for the
+        next run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.objArray.clear()
         self.ipList.clear()
-        self.readFile(f)
-        
+        self.f = None
+        self.ipReq.clear()
+        self.cumIpReq.clear()
+        self.cumReq.clear()
+        self.cumRes.clear()
+        self.cumUA.clear()
+        self.cumFile.clear()
+
+    def returnSortDic(self, dic):
+        """
+        This functions sorts a given dictionary in descending order based on values.
+
+        Parameters
+        ----------
+        dic : Dictionary
+            Unsorted dictionary
+
+        Returns
+        -------
+        dic : Dictionary
+            A dictionary sorted in descending order based on values.
+
+        """
+        dic = sorted(dic.items(), key = lambda kv:(kv[1],kv[0]))
+        dic.reverse()
+        return dict(dic)
+    
+    
+    def getCumulative(self):
+        """
+        This function reads all the Data Objects and cumulates it, total requests
+        responses, File access and User-Agents are calculated and stored in class
+        variables in descending order of frequencies.
+
+        Returns
+        -------
+        Data is stored in class variables
+
+        """
         for obj in self.objArray:
-            print(obj.ip)
-            print(obj.req)
-            self.ipReq[obj.ip] = sum(list(obj.req.values()))
-            print(obj.res)
-            print(obj.UA)
-            print(obj.file)
-            print(obj.tms)
-            print("\n")
+            self.cumIpReq[obj.ip] = sum(list(obj.req.values()))
+            for k,v in obj.req.items():
+                self.cumReq[k] = self.cumReq.get(k,0) + v
+            for k,v in obj.res.items():
+                self.cumRes[k] = self.cumRes.get(k,0) + v
+            for ua in obj.UA:
+                self.cumUA[ua] = self.cumUA.get(ua,0) + 1
+            for k,v in obj.file.items():
+                self.cumFile[k] = self.cumFile.get(k,0) + v
+        self.ipReq = self.cumIpReq
+        self.cumIpReq = self.returnSortDic(self.cumIpReq)
+        self.cumReq   = self.returnSortDic(self.cumReq)
+        self.cumRes   = self.returnSortDic(self.cumRes)
+        self.cumUA    = self.returnSortDic(self.cumUA)
+        self.cumFile  = self.returnSortDic(self.cumFile)
 
 
     def readFile(self, f):
+        """
+        This function reads the file line by line and groups data based on IP address
+        on different variables
+
+        Parameters
+        ----------
+        f : file object
+            The file object to read data for analysis
+
+        Returns
+        -------
+        Data stored in Class variables.
+
+        """
         while True:
             line = f.readline().replace("\"","").strip()
             if(not line):
