@@ -135,7 +135,8 @@ class outputGenerator:
 	    None.
 
 	    """
-		dirName = time.asctime().replace(" ","-")
+	    # Replacing : with - to make the Folder name Windows Compatible
+		dirName = time.asctime().replace(" ","-").replace(":","-")
 		if(not os.path.isdir(dirName)):
 			os.mkdir(dirName)
 		os.chdir(dirName)

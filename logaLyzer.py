@@ -35,6 +35,7 @@ class LogLyzer:
     cumRes   = {}
     cumUA    = {}
     cumFile  = {}
+    cumDate  = {}
     cumTms   = {}
 
     
@@ -71,6 +72,7 @@ class LogLyzer:
         self.cumRes.clear()
         self.cumUA.clear()
         self.cumFile.clear()
+        self.cumDate.clear()
         self.cumTms.clear()
 
     def returnSortDic(self, dic):
@@ -105,6 +107,7 @@ class LogLyzer:
 
         """
         for obj in self.objArray:
+            #print(obj.tms)
             self.cumIpReq[obj.ip] = sum(list(obj.req.values()))
             for k,v in obj.req.items():
                 self.cumReq[k] = self.cumReq.get(k,0) + v
@@ -114,14 +117,23 @@ class LogLyzer:
                 self.cumUA[ua] = self.cumUA.get(ua,0) + 1
             for k,v in obj.file.items():
                 self.cumFile[k] = self.cumFile.get(k,0) + v
-            for k,v in obj.tms.items():
-                self.cumTms[k] = self.cumTms.get(k,0) + v
+            for key in obj.tms:
+                self.cumDate[key] = self.cumDate.get(key,0) + sum(list(obj.tms[key].values()))
+            for key,values in obj.tms.items():
+                #print(key,values)
+                for k in values:
+                    if(key in self.cumTms.keys()):
+                        self.cumTms[key][k] = self.cumTms[key].get(k,0) + values[k]
+                    else:
+                        self.cumTms[key] = {}
+                        self.cumTms[key][k] = values[k]            
         self.ipReq = self.cumIpReq
         self.cumIpReq = self.returnSortDic(self.cumIpReq)
         self.cumReq   = self.returnSortDic(self.cumReq)
         self.cumRes   = self.returnSortDic(self.cumRes)
         self.cumUA    = self.returnSortDic(self.cumUA)
         self.cumFile  = self.returnSortDic(self.cumFile)
+        #print(self.cumTms)
 
 
     def readFile(self, f):
@@ -152,7 +164,10 @@ class LogLyzer:
                     obj.res[temp[8]] = obj.res.get(temp[8],0) + 1
                     obj.file[temp[6]] = obj.file.get(temp[6],0) + 1
                     obj.UA.append(' '.join(temp[11:]))
-                    obj.tms[temp[3].replace("[","").split("/")[0]] = obj.tms.get(temp[3].replace("[",""),0) + 1
+                    date = temp[3].replace("[","").split(":")[0]
+                    hr   = temp[3].split(":")[1]
+                    obj.tms[date] = {hr:1}
+                    #obj.tms[temp[3].replace("[","").split("/")[0]] = obj.tms.get(temp[3].replace("[",""),0) + 1
                     self.objArray.append(obj)
                 else:
                     index = self.ipList.index(temp[0])
@@ -161,4 +176,11 @@ class LogLyzer:
                     self.objArray[index].file[temp[6]] = self.objArray[index].file.get(temp[6], 0) + 1
                     if( ' '.join(temp[11:]) not in self.objArray[index].UA ):
                         self.objArray[index].UA.append(' '.join(temp[11:]))
-                    self.objArray[index].tms[temp[3].replace("[","").split("/")[0]] = self.objArray[index].tms.get(temp[3].replace("[",""), 0) + 1
+                    date = temp[3].replace("[","").split(":")[0]
+                    hr   = temp[3].split(":")[1]
+                    if(date in self.objArray[index].tms.keys()):
+                        self.objArray[index].tms[date][hr] = self.objArray[index].tms[date].get(hr,0) + 1
+                    else:
+                        self.objArray[index].tms[date] = {}
+                        self.objArray[index].tms[date][hr] = self.objArray[index].tms[date].get(hr,0) + 1
+                    #self.objArray[index].tms[temp[3].replace("[","").split(":")[0]] = self.objArray[index].tms.get(temp[3].replace("[",""), 0) + 1
