@@ -35,6 +35,7 @@ class LogLyzer:
     cumRes   = {}
     cumUA    = {}
     cumFile  = {}
+    cumTms   = {}
 
     
     def open_file(self):
@@ -70,6 +71,7 @@ class LogLyzer:
         self.cumRes.clear()
         self.cumUA.clear()
         self.cumFile.clear()
+        self.cumTms.clear()
 
     def returnSortDic(self, dic):
         """
@@ -112,6 +114,8 @@ class LogLyzer:
                 self.cumUA[ua] = self.cumUA.get(ua,0) + 1
             for k,v in obj.file.items():
                 self.cumFile[k] = self.cumFile.get(k,0) + v
+            for k,v in obj.tms.items():
+                self.cumTms[k] = self.cumTms.get(k,0) + v
         self.ipReq = self.cumIpReq
         self.cumIpReq = self.returnSortDic(self.cumIpReq)
         self.cumReq   = self.returnSortDic(self.cumReq)
@@ -148,7 +152,7 @@ class LogLyzer:
                     obj.res[temp[8]] = obj.res.get(temp[8],0) + 1
                     obj.file[temp[6]] = obj.file.get(temp[6],0) + 1
                     obj.UA.append(' '.join(temp[11:]))
-                    obj.tms[temp[3].replace("[","")] = obj.tms.get(temp[3].replace("[",""),0) + 1
+                    obj.tms[temp[3].replace("[","").split("/")[0]] = obj.tms.get(temp[3].replace("[",""),0) + 1
                     self.objArray.append(obj)
                 else:
                     index = self.ipList.index(temp[0])
@@ -157,4 +161,4 @@ class LogLyzer:
                     self.objArray[index].file[temp[6]] = self.objArray[index].file.get(temp[6], 0) + 1
                     if( ' '.join(temp[11:]) not in self.objArray[index].UA ):
                         self.objArray[index].UA.append(' '.join(temp[11:]))
-                    self.objArray[index].tms[temp[3].replace("[","")] = self.objArray[index].tms.get(temp[3].replace("[",""), 0) + 1
+                    self.objArray[index].tms[temp[3].replace("[","").split("/")[0]] = self.objArray[index].tms.get(temp[3].replace("[",""), 0) + 1
