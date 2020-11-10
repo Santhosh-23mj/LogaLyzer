@@ -151,6 +151,7 @@ class LogLyzer:
         Data stored in Class variables.
 
         """
+        self.freeMem()
         while True:
             line = f.readline().replace("\"","").strip()
             if(not line):
