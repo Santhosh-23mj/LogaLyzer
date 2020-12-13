@@ -36,7 +36,7 @@ class outputGenerator:
     """
         mast = []
         for i in self.log.objArray:
-            mast.append({"IP": i, "GET": int(list(i.req.values())[0]), "RES200": i.res.get(
+            mast.append({"IP": str(i), "GET": int(list(i.req.values())[0]), "RES200": i.res.get(
                 "200", 0), "RES404": i.res.get("404", 0)})
         result_df = pd.DataFrame.from_dict(mast)
         date_df = pd.DataFrame.from_dict(LogLyzer.cumDate.items())
@@ -200,7 +200,7 @@ write data from Logalyzer module to HTML and CSV files.
         self.writeToCsv("UA-and-Count.csv", self.log.cumUA, ["User-Agent", "Frequency"])
         self.writeToCsv("File-Access-and-Count.csv", self.log.cumFile,
                         ["File Accessed", "Frequency"])
-        self.writeToHTML()
+        #self.writeToHTML()
 
     def prettyPrint(self):
         """
